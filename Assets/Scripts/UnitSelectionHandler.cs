@@ -1,58 +1,116 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class UnitSelectionHandler : MonoBehaviour
 {
-    [SerializeField] private LayerMask _layerMask = new LayerMask();
+    [SerializeField] private RectTransform unitSelectionArea = null;
 
-    private Camera _mainCamera;
+    [SerializeField] private LayerMask layerMask = new LayerMask();
 
-    public List<Unit> selectedUnits { get; } = new List<Unit>();
+    private Vector2 startPosition;
 
-    private void Awake()
+    private RTSPlayer player;
+    private Camera mainCamera;
+
+    public List<PlayerObject> selectedPlayerObjects { get; } = new List<PlayerObject>();
+
+    private void Start()
     {
-        _mainCamera = Camera.main;
+        mainCamera = Camera.main;
     }
     
     private void Update() {
+        if (player == null)
+        {
+            player = NetworkClient.connection.identity.GetComponent<RTSPlayer>();
+        }
+
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
-            DeselectUnits();
-            // Start selection area
+            StartSelectionArea();
         }
         else if (Mouse.current.leftButton.wasReleasedThisFrame)
         {
-            SelectUnit();
+            ClearSelectionArea();
+        }
+        else if (Mouse.current.leftButton.isPressed)
+        {
+            UpdateSelectionArea();
         }
     }
 
-    private void SelectUnit()
+    private void StartSelectionArea()
     {
-        Vector3 mousePos = _mainCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-        RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector3.zero, _layerMask);
+        if (!Keyboard.current.leftShiftKey.isPressed) DeselectUnits();
 
-        if(!hit) return;
-        if(!hit.collider.TryGetComponent<Unit>(out Unit unit)) return;
-        if(!unit.hasAuthority) return;
 
-        selectedUnits.Add(unit);
 
-        foreach(Unit selectedUnit in selectedUnits)
+        unitSelectionArea.gameObject.SetActive(true);
+
+        startPosition = Mouse.current.position.ReadValue();
+
+        UpdateSelectionArea();
+    }
+
+    private void UpdateSelectionArea()
+    {
+        Vector2 mousePosition = Mouse.current.position.ReadValue();
+
+        float areaWidth = mousePosition.x - startPosition.x;
+        float areaHeight = mousePosition.y - startPosition.y;
+
+        unitSelectionArea.sizeDelta = new Vector2(Mathf.Abs(areaWidth), Mathf.Abs(areaHeight));
+        unitSelectionArea.anchoredPosition = startPosition + new Vector2(areaWidth / 2, areaHeight / 2);
+    }
+
+    private void ClearSelectionArea()
+    {
+        unitSelectionArea.gameObject.SetActive(false);
+
+        if (unitSelectionArea.sizeDelta.magnitude == 0)
         {
-            selectedUnit.Select();
+            Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
+
+            if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask)) return;
+            if (!hit.collider.TryGetComponent<PlayerObject>(out PlayerObject playerObject)) return;
+            if (!playerObject.hasAuthority) return;
+
+            selectedPlayerObjects.Add(playerObject);
+
+            foreach (PlayerObject selectedPlayerObj in selectedPlayerObjects)
+            {
+                selectedPlayerObj.Select();
+            }
+        }
+
+        Vector2 min = unitSelectionArea.anchoredPosition - (unitSelectionArea.sizeDelta / 2);
+        Vector2 max = unitSelectionArea.anchoredPosition + (unitSelectionArea.sizeDelta / 2);
+
+        foreach (PlayerObject playerObj in player.GetPlayerObjects())
+        {
+            if (selectedPlayerObjects.Contains(playerObj)) continue;
+
+            Vector3 screenPosition = mainCamera.WorldToScreenPoint(playerObj.transform.position);
+
+            if (screenPosition.x > min.x && screenPosition.x < max.x && screenPosition.y > min.y && screenPosition.y < max.y)
+            {
+                selectedPlayerObjects.Add(playerObj);
+                playerObj.Select();
+            }
         }
     }
 
     private void DeselectUnits()
     {
-        foreach(Unit selectedUnit in selectedUnits)
+        foreach (PlayerObject selectedPlayerObj in selectedPlayerObjects)
         {
-            selectedUnit.Deselect();
+            selectedPlayerObj.Deselect();
         }
 
-        selectedUnits.Clear();
+        selectedPlayerObjects.Clear();
     }
 }
