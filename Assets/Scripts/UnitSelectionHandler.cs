@@ -91,15 +91,19 @@ public class UnitSelectionHandler : MonoBehaviour
         Vector2 max = unitSelectionArea.anchoredPosition + (unitSelectionArea.sizeDelta / 2);
 
         foreach (PlayerObject playerObj in player.GetPlayerObjects())
-        {
-            if (selectedPlayerObjects.Contains(playerObj)) continue;
+        { 
+            // Only units can be selected by dragging.
+            if (!(playerObj is Unit)) continue;
+            Unit unit = playerObj as Unit;
 
-            Vector3 screenPosition = mainCamera.WorldToScreenPoint(playerObj.transform.position);
+            if (selectedPlayerObjects.Contains(unit)) continue;
+
+            Vector3 screenPosition = mainCamera.WorldToScreenPoint(unit.transform.position);
 
             if (screenPosition.x > min.x && screenPosition.x < max.x && screenPosition.y > min.y && screenPosition.y < max.y)
             {
-                selectedPlayerObjects.Add(playerObj);
-                playerObj.Select();
+                selectedPlayerObjects.Add(unit);
+                unit.Select();
             }
         }
     }

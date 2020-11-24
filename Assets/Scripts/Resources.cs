@@ -25,40 +25,57 @@ public class Resources : NetworkBehaviour
         return _resources[resourceType];
     }
 
-    int AddResource(ResourceType resourceType, int quantity) 
+    private void AddResources(Dictionary<ResourceType, int> resources) 
     { // Returns the new resource quantity
-        _resources[resourceType] += quantity;
-        return _resources[resourceType];
+        foreach (ResourceType resourceType in resources.Keys)
+        {
+            _resources[resourceType] += resources[resourceType];
+        }
     }
 
-    int TakeResource(ResourceType resourceType, int quantity) 
+    private void TakeResources(Dictionary<ResourceType, int> resources) 
     { // Returns the new resource quantity
-        _resources[resourceType] -= quantity;
-        return _resources[resourceType];
+        foreach (ResourceType resourceType in resources.Keys)
+        {
+            _resources[resourceType] -= resources[resourceType];
+        }
     }
 
     #region Server
 
     public override void OnStartServer()
     {
-        Resource.ServerOnAddResourceToCollection += ServerHandleAddResourceToCollection;
-        Resource.ServerOnTakeResourceFromCollection += ServerHandleTakeResourceFromCollection;
+        Resource.ServerOnAddResourceToCollection += ServerHandleAddResourcesToCollection;
+        Resource.ServerOnTakeResourceFromCollection += ServerHandleTakeResourcesFromCollection;
+        Building.ServerOnPurchase += ServerHandlePurchase;
     }
 
     public override void OnStopServer()
     {
-        Resource.ServerOnAddResourceToCollection -= ServerHandleAddResourceToCollection;
-        Resource.ServerOnTakeResourceFromCollection -= ServerHandleTakeResourceFromCollection;
+        Resource.ServerOnAddResourceToCollection -= ServerHandleAddResourcesToCollection;
+        Resource.ServerOnTakeResourceFromCollection -= ServerHandleTakeResourcesFromCollection;
+        Building.ServerOnPurchase -= ServerHandlePurchase;
     }
 
-    private void ServerHandleAddResourceToCollection(Resource resource)
+    private void ServerHandleAddResourcesToCollection(int playerConnectionID, Dictionary<ResourceType, int> resources)
     {
-        AddResource(resource.GetResourceType(), 1);
+        if (playerConnectionID != connectionToClient.connectionId) return;
+
+        AddResources(resources);
     }
 
-    private void ServerHandleTakeResourceFromCollection(Resource resource)
+    private void ServerHandleTakeResourcesFromCollection(int playerConnectionID, Dictionary<ResourceType, int> resources)
     {
-        TakeResource(resource.GetResourceType(), 1);
+        if (playerConnectionID != connectionToClient.connectionId) return;
+
+        TakeResources(resources);
+    }
+
+    private void ServerHandlePurchase(int playerConnectionID, Purchase purchase)
+    {
+        if (playerConnectionID != connectionToClient.connectionId) return;
+
+        TakeResources(purchase.GetCost());
     }
 
     #endregion
@@ -69,32 +86,42 @@ public class Resources : NetworkBehaviour
     {
         if (!isClientOnly) return;
 
-        Resource.AuthorityOnAddResourceToCollection += AuthorityHandleAddResourceToCollection;
-        Resource.AuthorityOnTakeResourceFromCollection += AuthorityHandleTakeResourceFromCollection;
+        Resource.AuthorityOnAddResourceToCollection += AuthorityHandleAddResourcesToCollection;
+        Resource.AuthorityOnTakeResourceFromCollection += AuthorityHandleTakeResourcesFromCollection;
+        Building.AuthorityOnPurchase += AuthorityHandlePurchase;
     }
     
     public override void OnStopClient()
     {
         if (!isClientOnly) return;
 
-        Resource.AuthorityOnAddResourceToCollection -= AuthorityHandleAddResourceToCollection;
-        Resource.AuthorityOnTakeResourceFromCollection -= AuthorityHandleTakeResourceFromCollection;
+        Resource.AuthorityOnAddResourceToCollection -= AuthorityHandleAddResourcesToCollection;
+        Resource.AuthorityOnTakeResourceFromCollection -= AuthorityHandleTakeResourcesFromCollection;
+        Building.AuthorityOnPurchase -= AuthorityHandlePurchase;
     }
 
-    private void AuthorityHandleAddResourceToCollection(Resource resource)
+    private void AuthorityHandleAddResourcesToCollection(Dictionary<ResourceType, int> resources)
     {
         // I don't know why the below line is required
         if (!hasAuthority) return;
 
-        AddResource(resource.GetResourceType(), 1);
+        AddResources(resources);
     }
 
-    private void AuthorityHandleTakeResourceFromCollection(Resource resource)
+    private void AuthorityHandleTakeResourcesFromCollection(Dictionary<ResourceType, int> resources)
     {
         // I don't know why the below line is required
         if (!hasAuthority) return;
 
-        TakeResource(resource.GetResourceType(), 1);
+        TakeResources(resources);
+    }
+
+    private void AuthorityHandlePurchase(Purchase purchase)
+    {
+        // I don't know why the below line is required
+        if (!hasAuthority) return;
+
+        TakeResources(purchase.GetCost());
     }
 
     #endregion

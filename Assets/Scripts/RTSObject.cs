@@ -4,7 +4,7 @@ using UnityEngine;
 public abstract class RTSObject : NetworkBehaviour {
     protected RTSObjectType _type;
 
-    protected void Start() 
+    protected virtual void Start() 
     {
         transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.y);
     }

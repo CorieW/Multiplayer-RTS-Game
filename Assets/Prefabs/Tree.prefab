@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2603548994454938174}
   - component: {fileID: 4667892778852173376}
   - component: {fileID: 5427279398158510356}
-  - component: {fileID: 2139524677251970282}
+  - component: {fileID: 2363858694539043690}
   m_Layer: 0
   m_Name: Tree
   m_TagString: Untagged
@@ -100,7 +100,7 @@ MonoBehaviour:
   serverOnly: 0
   m_AssetId: 
   hasSpawned: 0
---- !u!114 &2139524677251970282
+--- !u!114 &2363858694539043690
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -109,8 +109,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 4551689441813513027}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8aee380d1d0bb742b911317d79159d3, type: 3}
+  m_Script: {fileID: 11500000, guid: 1282242d8f444524bb3564587b20da77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  _health: 150
+  _resource: {fileID: 8139310320411580859, guid: 9893904758564b346859265d2cf3d8a9, type: 3}

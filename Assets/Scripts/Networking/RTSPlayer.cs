@@ -53,6 +53,14 @@ public class RTSPlayer : NetworkBehaviour
 
     #region Client
 
+    [Client]
+    private void Start()
+    {
+        if (!hasAuthority) return;
+
+        Camera.main.transform.position = transform.position;
+    }
+
     public override void OnStartClient()
     {
         // Without the below check, there would be a duplicate list

@@ -11,13 +11,14 @@ GameObject:
   - component: {fileID: 2273848166656367578}
   - component: {fileID: 3926704864077362793}
   - component: {fileID: 8634064211468353800}
-  - component: {fileID: 4216557430853783865}
-  - component: {fileID: 9105610497863348995}
+  - component: {fileID: 9087446547711361997}
+  - component: {fileID: 7119556080391907180}
+  - component: {fileID: 2508051275706512684}
   - component: {fileID: 8141880125172816583}
   - component: {fileID: 6760934079334733681}
   - component: {fileID: 547422107418078091}
   m_Layer: 0
-  m_Name: Unit
+  m_Name: Worker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -102,10 +103,10 @@ CapsuleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 0.49}
   m_Size: {x: 0.58, y: 1.01}
   m_Direction: 0
---- !u!114 &4216557430853783865
+--- !u!114 &9087446547711361997
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -114,19 +115,49 @@ MonoBehaviour:
   m_GameObject: {fileID: 5436740935603576122}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 409c66e8376c002419bdfdbd43dea67b, type: 3}
+  m_Script: {fileID: 11500000, guid: d0535873e52a29141bcb9a174cf2d747, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  _aiPath: {fileID: 9105610497863348995}
+  _health: 0
   _onSelected:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5957159137653213779}
+        m_TargetAssemblyTypeName: UnityEngine.Renderer, UnityEngine
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
   _onDeselected:
     m_PersistentCalls:
-      m_Calls: []
---- !u!114 &9105610497863348995
+      m_Calls:
+      - m_Target: {fileID: 5957159137653213779}
+        m_TargetAssemblyTypeName: UnityEngine.Renderer, UnityEngine
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _aiPath: {fileID: 0}
+  _taskList: {fileID: 7119556080391907180}
+  _canBuild: 0
+  _canAttack: 0
+  _canResourceHarvest: 0
+  _canHide: 0
+--- !u!114 &7119556080391907180
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -135,7 +166,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 5436740935603576122}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6eb1402c17e84a9282a7f0f62eb584f, type: 3}
+  m_Script: {fileID: 11500000, guid: a7e7393a1bbdcd54cb072e5ac41b9d0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2508051275706512684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5436740935603576122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc56dba3582b7d348b2f2052300a623b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   version: 2
@@ -144,7 +187,7 @@ MonoBehaviour:
   repathRate: 0.25
   canSearch: 1
   canMove: 1
-  maxSpeed: 1
+  maxSpeed: 2
   gravity: {x: 0, y: 0, z: 0}
   groundMask:
     serializedVersion: 2
@@ -249,8 +292,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5565387721345240580}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.156, z: 0.01}
-  m_LocalScale: {x: 1.67, y: 0.34, z: 1}
+  m_LocalPosition: {x: 0, y: -0.01, z: 0.01}
+  m_LocalScale: {x: 6.0615196, y: 0.46963865, z: 1}
   m_Children: []
   m_Father: {fileID: 2273848166656367578}
   m_RootOrder: 0

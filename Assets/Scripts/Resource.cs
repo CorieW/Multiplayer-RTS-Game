@@ -1,16 +1,17 @@
 using System;
+using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 
-public class Resource : MonoBehaviour {
+public class Resource : NetworkBehaviour {
 
     [SerializeField] private ResourceType _type;
 
-    public static event Action<Resource> ServerOnAddResourceToCollection;
-    public static event Action<Resource> ServerOnTakeResourceFromCollection;
+    public static event Action<int, Dictionary<ResourceType, int>> ServerOnAddResourceToCollection;
+    public static event Action<int, Dictionary<ResourceType, int>> ServerOnTakeResourceFromCollection;
 
-    public static event Action<Resource> AuthorityOnAddResourceToCollection;
-    public static event Action<Resource> AuthorityOnTakeResourceFromCollection;
+    public static event Action<Dictionary<ResourceType, int>> AuthorityOnAddResourceToCollection;
+    public static event Action<Dictionary<ResourceType, int>> AuthorityOnTakeResourceFromCollection;
 
     public ResourceType GetResourceType()
     {
@@ -20,15 +21,15 @@ public class Resource : MonoBehaviour {
     #region Server
 
     [Command]
-    private void CmdAddResourceToCollection()
-    { // Ran from the client version of this method
-        ServerOnAddResourceToCollection?.Invoke(this);
+    private void CmdAddResourceToCollection(int playerConnectionID)
+    { // Called from the client version of this method
+        ServerOnAddResourceToCollection?.Invoke(playerConnectionID, new Dictionary<ResourceType, int>() { { _type, 1 } });
     }
 
     [Command]
-    private void CmdTakeResourceFromCollection()
-    { // Ran from the client version of this method
-        ServerOnTakeResourceFromCollection?.Invoke(this);
+    private void CmdTakeResourceFromCollection(int playerConnectionID)
+    { // Called from the client version of this method
+        ServerOnTakeResourceFromCollection?.Invoke(playerConnectionID, new Dictionary<ResourceType, int>() { { _type, 1 } });
     }
 
     #endregion
@@ -37,22 +38,22 @@ public class Resource : MonoBehaviour {
 
     [Client]
     public void AddResourceToCollection()
-    { // Add resource for the client
-        AuthorityOnAddResourceToCollection?.Invoke(this);
+    { // Add resources for the client
+        AuthorityOnAddResourceToCollection?.Invoke(new Dictionary<ResourceType, int>() { { _type, 1 } });
 
-        // Add resource for the server as well, so the server can keep track of the player
+        // Add resources for the server as well, so the server can keep track of the player
         // This is so the server can verify that the resources of the player are correct and no cheating is involved.
-        CmdAddResourceToCollection();
+        CmdAddResourceToCollection(connectionToClient.connectionId);
     }
 
     [Client]
     public void TakeResourceFromCollection()
-    { // Add resource for the client
-        AuthorityOnTakeResourceFromCollection?.Invoke(this);
+    { // Add resources for the client
+        AuthorityOnTakeResourceFromCollection?.Invoke(new Dictionary<ResourceType, int>() { { _type, 1 } });
 
-        // Add resource for the server as well, so the server can keep track of the player
+        // Add resources for the server as well, so the server can keep track of the player
         // This is so the server can verify that the resources of the player are correct and no cheating is involved.
-        CmdTakeResourceFromCollection();
+        CmdTakeResourceFromCollection(connectionToClient.connectionId);
     }
 
     #endregion

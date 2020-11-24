@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
-public class TaskList {
-    List<Task> _tasks = new List<Task>();
+[RequireComponent(typeof(Unit))]
+public class TaskList : MonoBehaviour {
+    private List<Task> _tasks = new List<Task>();
 
     public List<Task> GetTasks() 
     {
@@ -37,4 +39,5 @@ public class TaskList {
     { // Assigns a task to complete before every other task
         _tasks.Insert(0, task);
     }
+
 }
