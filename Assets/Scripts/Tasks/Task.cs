@@ -8,16 +8,16 @@ public class Task {
     }
 }
 public class MoveTask : Task {
-    Vector2 _pos;
+    Vector3 _pos;
     float _range;
 
-    public MoveTask(Vector2 pos, float range = 0) {
+    public MoveTask(Vector3 pos, float range = 0) {
         _pos = pos;
         _range = range;
         _type = TaskType.Move;
     }
 
-    public Vector2 GetTaskPosition() {
+    public Vector3 GetTaskPosition() {
         return _pos;
     }
 
@@ -55,7 +55,7 @@ public class ResourceHarvestTask : Task {
 
     public ResourceHarvestTask(ResourceDeposit resourceDepo) {
         _resourceDepo = resourceDepo;
-        _type = TaskType.Gather;
+        _type = TaskType.ResourceHarvest;
     }
 
     public ResourceDeposit GetTaskResourceDeposit() {
@@ -63,15 +63,15 @@ public class ResourceHarvestTask : Task {
     }
 }
 public class HaulTask : Task {
-    Resource _resource;
+    ResourceDrop _resourceDrop;
 
-    public HaulTask(Resource resource) {
-        _resource = resource;
+    public HaulTask(ResourceDrop resourceDrop) {
+        _resourceDrop = resourceDrop;
         _type = TaskType.Haul;
     }
 
-    public Resource GetTaskResource() {
-        return _resource;
+    public ResourceDrop GetTaskResource() {
+        return _resourceDrop;
     }
 }
 public class AttackTask : Task {
@@ -88,5 +88,5 @@ public class AttackTask : Task {
 }
 
 public enum TaskType {
-    None, Move, Build, Repair, Gather, Haul, Attack
+    None, Move, Build, Repair, ResourceHarvest, Haul, Attack
 }

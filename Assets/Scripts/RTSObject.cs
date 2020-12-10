@@ -2,6 +2,9 @@ using Mirror;
 using UnityEngine;
 
 public abstract class RTSObject : NetworkBehaviour {
+    [Header("References")]
+    [SerializeField] protected SpriteRenderer _minimapIcon;
+
     protected RTSObjectType _type;
 
     protected virtual void Start() 

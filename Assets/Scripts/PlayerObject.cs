@@ -4,9 +4,14 @@ using UnityEngine;
 using UnityEngine.Events;
 
 public abstract class PlayerObject : RTSObject {
+
     protected RTSPlayer _owner;
 
-    [SyncVar] [SerializeField] protected float _health;
+    [Header("Attributes")]
+    [SyncVar] [SerializeField] protected float _maxHealth;
+    [SyncVar] [SerializeField] protected float _currentHealth;
+
+    [Space]
 
     [SerializeField] private UnityEvent _onSelected = null;
     [SerializeField] private UnityEvent _onDeselected = null;
@@ -17,9 +22,14 @@ public abstract class PlayerObject : RTSObject {
     public static event Action<PlayerObject> AuthorityOnPlayerObjectSpawned;
     public static event Action<PlayerObject> AuthorityOnPlayerObjectDespawned;
 
+    public float GetMaxHealth()
+    {
+        return _maxHealth;
+    }
+
     public float GetHealth()
     {
-        return _health;
+        return _currentHealth;
     }
 
     public RTSPlayer GetOwner()
@@ -42,9 +52,9 @@ public abstract class PlayerObject : RTSObject {
     [Command]
     public void CmdDamage(float damage)
     { // Deal damage to the player object
-        if (_health - damage > 0)
+        if (_currentHealth - damage > 0)
         {
-            _health -= damage;
+            _currentHealth -= damage;
         }
         else {
             NetworkServer.Destroy(gameObject);
@@ -54,6 +64,11 @@ public abstract class PlayerObject : RTSObject {
     #endregion
 
     #region Client
+
+    public override void OnStartClient()
+    {
+        ColorRepresentMinimapIcon();
+    }
 
     public override void OnStartAuthority()
     {
@@ -79,6 +94,13 @@ public abstract class PlayerObject : RTSObject {
         if (!hasAuthority) return;
 
         _onDeselected?.Invoke();
+    }
+
+    [Client]
+    private void ColorRepresentMinimapIcon()
+    { // Changing color of minimap icon to represent whether the object is friendly or not.
+        if (hasAuthority) _minimapIcon.color = GlobalVariables.ownedColor;
+        else _minimapIcon.color = GlobalVariables.enemyColor;
     }
 
     #endregion

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
@@ -5,15 +6,15 @@ using UnityEngine;
 
 public class Resources : NetworkBehaviour
 {
-    Dictionary<ResourceType, int> _resources = new Dictionary<ResourceType, int>();
-
-    private void Start() 
+    Dictionary<ResourceType, int> _resources = new Dictionary<ResourceType, int>() 
     {
-        _resources.Add(ResourceType.Food, 0);
-        _resources.Add(ResourceType.Wood, 0);
-        _resources.Add(ResourceType.Stone, 0);
-        _resources.Add(ResourceType.Gold, 0);
-    }
+        {ResourceType.Food, 0},
+        {ResourceType.Wood, 0},
+        {ResourceType.Stone, 0},
+        {ResourceType.Gold, 0}
+    };
+
+    public static event Action<Resources> OnResourcesChange;
 
     public Dictionary<ResourceType, int> GetResources() 
     {
@@ -31,6 +32,8 @@ public class Resources : NetworkBehaviour
         {
             _resources[resourceType] += resources[resourceType];
         }
+
+        OnResourcesChange?.Invoke(this);
     }
 
     private void TakeResources(Dictionary<ResourceType, int> resources) 
@@ -39,21 +42,23 @@ public class Resources : NetworkBehaviour
         {
             _resources[resourceType] -= resources[resourceType];
         }
+
+        OnResourcesChange?.Invoke(this);
     }
 
     #region Server
 
     public override void OnStartServer()
     {
-        Resource.ServerOnAddResourceToCollection += ServerHandleAddResourcesToCollection;
-        Resource.ServerOnTakeResourceFromCollection += ServerHandleTakeResourcesFromCollection;
+        ResourceDrop.ServerOnAddResourceToCollection += ServerHandleAddResourcesToCollection;
+        ResourceDrop.ServerOnTakeResourceFromCollection += ServerHandleTakeResourcesFromCollection;
         Building.ServerOnPurchase += ServerHandlePurchase;
     }
 
     public override void OnStopServer()
     {
-        Resource.ServerOnAddResourceToCollection -= ServerHandleAddResourcesToCollection;
-        Resource.ServerOnTakeResourceFromCollection -= ServerHandleTakeResourcesFromCollection;
+        ResourceDrop.ServerOnAddResourceToCollection -= ServerHandleAddResourcesToCollection;
+        ResourceDrop.ServerOnTakeResourceFromCollection -= ServerHandleTakeResourcesFromCollection;
         Building.ServerOnPurchase -= ServerHandlePurchase;
     }
 
@@ -86,8 +91,8 @@ public class Resources : NetworkBehaviour
     {
         if (!isClientOnly) return;
 
-        Resource.AuthorityOnAddResourceToCollection += AuthorityHandleAddResourcesToCollection;
-        Resource.AuthorityOnTakeResourceFromCollection += AuthorityHandleTakeResourcesFromCollection;
+        ResourceDrop.AuthorityOnAddResourceToCollection += AuthorityHandleAddResourcesToCollection;
+        ResourceDrop.AuthorityOnTakeResourceFromCollection += AuthorityHandleTakeResourcesFromCollection;
         Building.AuthorityOnPurchase += AuthorityHandlePurchase;
     }
     
@@ -95,8 +100,8 @@ public class Resources : NetworkBehaviour
     {
         if (!isClientOnly) return;
 
-        Resource.AuthorityOnAddResourceToCollection -= AuthorityHandleAddResourcesToCollection;
-        Resource.AuthorityOnTakeResourceFromCollection -= AuthorityHandleTakeResourcesFromCollection;
+        ResourceDrop.AuthorityOnAddResourceToCollection -= AuthorityHandleAddResourcesToCollection;
+        ResourceDrop.AuthorityOnTakeResourceFromCollection -= AuthorityHandleTakeResourcesFromCollection;
         Building.AuthorityOnPurchase -= AuthorityHandlePurchase;
     }
 

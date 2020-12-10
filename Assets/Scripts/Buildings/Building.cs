@@ -7,12 +7,13 @@ using UnityEngine.Events;
 
 public class Building : PlayerObject {
 
+    [Header("References")]
+    [SerializeField] protected Transform _unitSpawnPoint = null;
+
     [Header("Attributes")]
     [SerializeField] private List<Purchase> _purchases = new List<Purchase>();
-    [SerializeField] private Transform _unitSpawnPoint = null;
 
     public static event Action<int, Purchase> ServerOnPurchase;
-
     public static event Action<Purchase> AuthorityOnPurchase;
 
     #region Server
@@ -20,26 +21,31 @@ public class Building : PlayerObject {
     [Command]
     private void CmdPurchase(int playerConnectionID, Purchase purchase)
     { // Called from the client-side version of this function
-        if(purchase.CanAfford(_owner.GetResources().GetResources()))
-        
+        // Player can not afford to purchase the unit, so return.
+        if(!purchase.CanAfford(_owner.GetResources().GetResources())) return;
+
         ServerOnPurchase?.Invoke(playerConnectionID, purchase);
 
-        if (purchase is UnitPurchase)
-        {
-            Unit purchasedUnit = (purchase as UnitPurchase).GetUnit();
-            purchasedUnit = Instantiate(purchasedUnit, _unitSpawnPoint.position, Quaternion.identity);
+        if (purchase is UnitPurchase) HandleUnitPurchase(purchase as UnitPurchase);
+    }
 
-            NetworkServer.Spawn(purchasedUnit.gameObject, connectionToClient);
-        }
+    [Server]
+    private void HandleUnitPurchase(UnitPurchase unitPurchase)
+    {
+        Unit purchasedUnit = unitPurchase.GetUnit();
+        purchasedUnit = Instantiate(purchasedUnit, _unitSpawnPoint.position, Quaternion.identity);
+
+        NetworkServer.Spawn(purchasedUnit.gameObject, connectionToClient);
     }
 
     #endregion
 
     #region Client
 
+    [Client]
     public void Purchase(Purchase purchase)
     {
-        if(purchase.CanAfford(_owner.GetResources().GetResources()))
+        if(purchase.CanAfford(_owner.GetResources().GetResources())) //! I don't know whether this sends the type Purchase or the actual type.
 
         CmdPurchase(connectionToClient.connectionId, purchase);
 
