@@ -29,7 +29,7 @@ public class FogTextureHandler : MonoBehaviour
 
     public void SetupFog()
     { // Creates a fog sprite.
-        Texture2D texture = new Texture2D(FogHandler.fogSize.x, FogHandler.fogSize.y);
+        Texture2D texture = new Texture2D(_fogHandler.fogSize.x, _fogHandler.fogSize.y);
         texture.filterMode = FilterMode.Point;
 
         Color[] colors = new Color[texture.width * texture.height];

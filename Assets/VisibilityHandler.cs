@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 
+[RequireComponent(typeof(FogHandler))]
 public class VisibilityHandler : MonoBehaviour
 {
     private RTSPlayer _player;
+
+    [Header("Dependencies")]
+    [SerializeField] private FogHandler _fogHandler;
 
     private int[,] _visibilityMap;
 
@@ -13,7 +17,7 @@ public class VisibilityHandler : MonoBehaviour
 
     void Start() 
     {
-        _visibilityMap = new int[FogHandler.fogSize.x, FogHandler.fogSize.y];
+        _visibilityMap = new int[_fogHandler.fogSize.x, _fogHandler.fogSize.y];
     }
 
     void Update()
@@ -34,7 +38,7 @@ public class VisibilityHandler : MonoBehaviour
         ResetMap();
 
         // The offset from that's applied to the tiles to have them centered.
-        Vector2Int offset = new Vector2Int(FogHandler.fogSize.x, FogHandler.fogSize.y) / 2;
+        Vector2Int offset = new Vector2Int(_fogHandler.fogSize.x, _fogHandler.fogSize.y) / 2;
 
         foreach(PlayerObject playerObj in _player.GetPlayerObjects())
         {
@@ -55,11 +59,14 @@ public class VisibilityHandler : MonoBehaviour
                     // Pythagoras theorem used to check whether tile is within radius.
                     float distance = Mathf.Sqrt((x * x) + (y * y));
 
-                    // Checking whether the distance is within radius.
-                    if (distance <= 5)
-                    { // Tile is visible.
-                        _visibilityMap[tileIndex.x + x, tileIndex.y + y] = 1;
-                    }
+                    // Tile is not visible
+                    if (distance > 5) continue;
+
+                    _visibilityMap
+                        [
+                            Mathf.Clamp(tileIndex.x + x, 0, _fogHandler.fogSize.x - 1),
+                            Mathf.Clamp(tileIndex.y + y, 0, _fogHandler.fogSize.y - 1)
+                        ] = 1;
                 }
             }
 
@@ -68,9 +75,9 @@ public class VisibilityHandler : MonoBehaviour
 
     private void ResetMap()
     { // Resets all of the visibility values to 0 (not visible).
-        for (int x = 0; x < FogHandler.fogSize.x; x++)
+        for (int x = 0; x < _fogHandler.fogSize.x; x++)
         {
-            for (int y = 0; y < FogHandler.fogSize.y; y++)
+            for (int y = 0; y < _fogHandler.fogSize.y; y++)
             {
                 _visibilityMap[x, y] = 0;
             }

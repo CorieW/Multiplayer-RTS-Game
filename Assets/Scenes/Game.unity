@@ -1086,8 +1086,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1260387896}
   - component: {fileID: 1260387895}
-  - component: {fileID: 1260387897}
   - component: {fileID: 1260387898}
+  - component: {fileID: 1260387897}
   - component: {fileID: 1260387894}
   m_Layer: 9
   m_Name: FogOfWar
@@ -1112,7 +1112,6 @@ MonoBehaviour:
   _fogHandler: {fileID: 1260387898}
   _fogColor: {r: 0.05882353, g: 0.05882353, b: 0.05882353, a: 1}
   _fadeTime: 0.5
-  _extraFog: {x: 5, y: 5}
 --- !u!212 &1260387895
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1190,6 +1189,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fecc4639d020bb24cbc92340ed12bba9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _fogHandler: {fileID: 1260387898}
 --- !u!114 &1260387898
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1202,6 +1202,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc1557fdc7ffffc428ab00fe5961e5cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _map: {fileID: 1649245281}
   _visibilityHandler: {fileID: 1260387897}
 --- !u!1 &1350437705
 GameObject:
@@ -1290,6 +1291,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1649245280}
   - component: {fileID: 1649245279}
+  - component: {fileID: 1649245281}
+  - component: {fileID: 1649245282}
   - component: {fileID: 1649245278}
   m_Layer: 9
   m_Name: MapGenerator
@@ -1310,14 +1313,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a7cd7913660afc4991eb4c27eece904, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  _groundMapSeed: 0
-  _featureMapSeed: 0
+  _map: {fileID: 1649245281}
   _chunkPrefab: {fileID: 8297907234921719660, guid: 3df6f5c44e518ed46b2ed565e66a392d, type: 3}
-  _grassColor: {r: 0.32740745, g: 0.8301887, b: 0.27020293, a: 1}
-  _features:
-  - {fileID: 4551689441813513027, guid: f209beab1ac43ce4bad4d52700422367, type: 3}
 --- !u!114 &1649245279
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1348,6 +1345,55 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1649245281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1649245277}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78a8fbf254b62da409788097d0cbdb41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  _biomeZoneGenerator: {fileID: 1649245282}
+  _mapGenerator: {fileID: 1649245278}
+  _mapChunks: {x: 8, y: 8}
+--- !u!114 &1649245282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1649245277}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 893d69cf475ec2b4180bf026160650aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  _map: {fileID: 1649245281}
+  _biomeZones:
+  - _name: Grassland
+    _groundColor: {r: 0.31612673, g: 0.6981132, b: 0.24148564, a: 1}
+    _features: []
+    _nutrientMax: 30
+    _nutrientMin: 0
+  - _name: Forest
+    _groundColor: {r: 0.31764707, g: 0.69803923, b: 0.24313727, a: 1}
+    _features:
+    - _gameObject: {fileID: 4551689441813513027, guid: f209beab1ac43ce4bad4d52700422367, type: 3}
+      _radius: 3
+      _spawnChance: 16.3
+    _nutrientMax: 100
+    _nutrientMin: 30
+  _seed: 0
+  _scale: 200
+  _octaves: 8
 --- !u!1 &1660094253
 GameObject:
   m_ObjectHideFlags: 0
