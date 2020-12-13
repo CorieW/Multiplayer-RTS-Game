@@ -12,6 +12,8 @@ public class MapGenerator : MonoBehaviour
     [Header("References")]
     [SerializeField] private GameObject _chunkPrefab;
 
+    Feature[,] _featureMap;
+
     System.Random rnd = new System.Random();
 
     private void Start()
@@ -30,6 +32,8 @@ public class MapGenerator : MonoBehaviour
 
     public void GenerateFeatures(BiomeZone[,] biomeZoneMap)
     {
+        _featureMap = new Feature[_map.mapSize.x, _map.mapSize.y];
+
         for (int x = -_map.mapChunks.x/2; x < _map.mapChunks.x/2; x++) {
             for (int y = -_map.mapChunks.y/2; y < _map.mapChunks.y/2; y++) {
                 GenerateChunkFeatures(new Vector2Int(x, y), biomeZoneMap);
@@ -51,18 +55,19 @@ public class MapGenerator : MonoBehaviour
 
                 foreach (Feature feature in biomeZoneMap[tilePos.x, tilePos.y].features)
                 {
-                    if(x == 0 && y == 0) Debug.Log(feature.spawnChance);
                     bool probabilityMet = ((float)Random.Range(0, 1000000) / 1000000) <= feature.spawnChance;
 
                     // Todo: Check distance from other +.
 
                     // Probability not met - continue.
                     if (!probabilityMet) continue;
+                    if (!IsFeatureSpawnable(tilePos, feature.radius)) continue;
 
+                    _featureMap[tilePos.x, tilePos.y] = feature;
                     GameObject newFeature = Instantiate(feature.gameObject, Vector3.zero, Quaternion.identity);
                     newFeature.transform.position = (chunkPos * Map.CHUNK_SIZE) + new Vector2(x + 0.5f, y + Random.Range(0.00f, 0.5f)); // +0.5f to center the object in the grid cell.
                     // Just determines how big the tree is going to be, so 0.7 - 1.2, these numbers just work well for me.
-                    float size = (float)rnd.Next(700, 1200) / 1000;
+                    float size = (float)rnd.Next(900, 1500) / 1000;
                     newFeature.transform.localScale = new Vector3(size, size, 1);
 
                     NetworkServer.Spawn(newFeature);
@@ -71,6 +76,33 @@ public class MapGenerator : MonoBehaviour
                 }
             }
         }
+    }
+
+    private bool IsFeatureSpawnable(Vector2Int tilePos, float radius)
+    { // Checks whether the feature that is spawning in that position is occupying any other feature's radius
+      // Also checks whether other objects occupy the new features radius. If either are true, the feature won't spawn.
+        for (int x = -10; x < 10; x++)
+        {
+            for (int y = -10; y < 10; y++)
+            {
+                Vector2Int featurePos = new Vector2Int(tilePos.x + x, tilePos.y + y);
+                Feature feature = _featureMap
+                    [
+                        Mathf.Clamp(featurePos.x, 0, _map.mapSize.x - 1),
+                        Mathf.Clamp(featurePos.y, 0, _map.mapSize.y - 1)
+                    ];
+                
+                if (feature == null) continue;
+
+                // Pythagoras Theorem
+                float distance = Mathf.Sqrt((x * x) + (y * y));
+
+                if (distance <= radius) return false;
+                if (distance <= feature.radius) return false;
+            }
+        }
+
+        return true;
     }
 
     private GameObject GenerateChunk(Vector2Int chunkPos, BiomeZone[,] biomeZoneMap) 

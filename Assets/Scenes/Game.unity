@@ -1095,7 +1095,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1260387894
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1387,8 +1387,8 @@ MonoBehaviour:
     _groundColor: {r: 0.31764707, g: 0.69803923, b: 0.24313727, a: 1}
     _features:
     - _gameObject: {fileID: 4551689441813513027, guid: f209beab1ac43ce4bad4d52700422367, type: 3}
-      _radius: 3
-      _spawnChance: 16.3
+      _radius: 1.5
+      _spawnChance: 20
     _nutrientMax: 100
     _nutrientMin: 30
   _seed: 0
