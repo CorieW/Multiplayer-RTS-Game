@@ -1,33 +1,23 @@
+using UnityEngine;
+
 [System.Serializable]
 public class ResourceStack
 {
-    private ResourceType _resourceType;
-    private int _amount;
+    [SerializeField] private ResourceType _resourceType;
+    [SerializeField] private int _amount;
 
-    public ResourceType GetResourceType()
-    {
-        return _resourceType;
-    }
-
-    public int GetAmount()
-    {
-        return _amount;
-    }
+    public ResourceType resourceType { get { return _resourceType; } }
+    public int amount { get { return _amount; } }
 
     public ResourceStack()
     {
         _resourceType = ResourceType.Food;
-        _amount = 0;
+        _amount = 1;
     }
 
-    public ResourceStack(ResourceType resourceType, int amount)
+    public ResourceStack(ResourceType resourceType, int amount = 1)
     {
         _resourceType = resourceType;
         _amount = amount;
-    }
-
-    public void CreateDrop()
-    { // Creates a drop out of the resource stack
-
     }
 }

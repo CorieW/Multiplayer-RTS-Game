@@ -38,6 +38,18 @@ public class BuildTask : Task {
         return _building;
     }
 }
+public class StoreTask : Task {
+    Stockpile _stockpile;
+
+    public StoreTask(Stockpile stockpile) {
+        _stockpile = stockpile;
+        _type = TaskType.Store;
+    }
+
+    public Stockpile GetTaskStockpile() {
+        return _stockpile;
+    }
+}
 public class RepairTask : Task {
     Building _building;
 
@@ -88,5 +100,5 @@ public class AttackTask : Task {
 }
 
 public enum TaskType {
-    None, Move, Build, Repair, ResourceHarvest, Haul, Attack
+    None, Move, Build, Repair, ResourceHarvest, Haul, Attack, Store
 }

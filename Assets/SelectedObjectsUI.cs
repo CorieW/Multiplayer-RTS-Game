@@ -13,7 +13,7 @@ public class SelectedObjectsUI : MonoBehaviour
     [Header("Attributes")]
     [SerializeField] private List<SelectedObjectUI> _selectedObjectUIs;
 
-    private void Start()
+    private void Awake()
     {
         ObjectSelectionHandler.OnSelectObject += SelectObject;
         ObjectSelectionHandler.OnDeselectObject += DeselectObject;

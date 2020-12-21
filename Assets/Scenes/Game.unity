@@ -785,7 +785,7 @@ MonoBehaviour:
   _speed: 25
   _mouseMoveSpeed: 25
   _minZoom: 3
-  _maxZoom: 20
+  _maxZoom: 100
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -1380,7 +1380,13 @@ MonoBehaviour:
   _biomeZones:
   - _name: Grassland
     _groundColor: {r: 0.31612673, g: 0.6981132, b: 0.24148564, a: 1}
-    _features: []
+    _features:
+    - _gameObject: {fileID: 4551689441813513027, guid: f209beab1ac43ce4bad4d52700422367, type: 3}
+      _radius: 1.5
+      _spawnChance: 1
+    - _gameObject: {fileID: 1424019998440561532, guid: e4a12cf46b6ba1242922977f82a449b4, type: 3}
+      _radius: 1
+      _spawnChance: 0.5
     _nutrientMax: 30
     _nutrientMin: 0
   - _name: Forest
@@ -1389,10 +1395,13 @@ MonoBehaviour:
     - _gameObject: {fileID: 4551689441813513027, guid: f209beab1ac43ce4bad4d52700422367, type: 3}
       _radius: 1.5
       _spawnChance: 20
+    - _gameObject: {fileID: 1424019998440561532, guid: e4a12cf46b6ba1242922977f82a449b4, type: 3}
+      _radius: 1
+      _spawnChance: 0.5
     _nutrientMax: 100
     _nutrientMin: 30
   _seed: 0
-  _scale: 200
+  _scale: 135
   _octaves: 8
 --- !u!1 &1660094253
 GameObject:

@@ -15,7 +15,7 @@ public class VisibilityHandler : MonoBehaviour
 
     public int[,] visibilityMap { get { return _visibilityMap; } }
 
-    void Start() 
+    void Awake() 
     {
         _visibilityMap = new int[_fogHandler.fogSize.x, _fogHandler.fogSize.y];
     }

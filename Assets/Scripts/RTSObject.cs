@@ -7,6 +7,11 @@ public abstract class RTSObject : NetworkBehaviour {
 
     protected RTSObjectType _type;
 
+    protected virtual void Awake()
+    {
+
+    }
+
     protected virtual void Start() 
     {
         transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.y);

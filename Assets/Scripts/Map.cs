@@ -1,5 +1,6 @@
 using Mirror;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(BiomeZoneGenerator), typeof(MapGenerator))]
 public class Map : NetworkBehaviour
@@ -21,10 +22,22 @@ public class Map : NetworkBehaviour
     public Vector2Int mapSize { get { return new Vector2Int(_mapChunks.x * CHUNK_SIZE, _mapChunks.y * CHUNK_SIZE); } }
     public Zone[,] zoneMap { get { return _zoneMap; } }
 
-    private void Start()
+    private void Awake()
     {
         if (!_biomeZoneGenerator) _biomeZoneGenerator = GetComponent<BiomeZoneGenerator>();
         if (!_mapGenerator) _mapGenerator = GetComponent<MapGenerator>();
+    }
+
+    private void Start()
+    {
+        // The below code is used for testing the generation.
+        if (SceneManager.GetActiveScene().name != "MapGenerationTestScene") return;
+        
+        BiomeZone[,] biomeZoneMap = _biomeZoneGenerator.GenerateBiomeZoneMap();
+        _zoneMap = biomeZoneMap;
+
+        _mapGenerator.GenerateFeatures(biomeZoneMap);
+        _mapGenerator.GenerateChunks(biomeZoneMap);
     }
 
     #region Server

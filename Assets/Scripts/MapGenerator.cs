@@ -14,9 +14,9 @@ public class MapGenerator : MonoBehaviour
 
     Feature[,] _featureMap;
 
-    System.Random rnd = new System.Random();
+    System.Random rnd;
 
-    private void Start()
+    private void Awake()
     {
         if (!_map) GetComponent<Map>();
     }
@@ -32,6 +32,7 @@ public class MapGenerator : MonoBehaviour
 
     public void GenerateFeatures(BiomeZone[,] biomeZoneMap)
     {
+        rnd = new System.Random(Random.Range(0, int.MaxValue));
         _featureMap = new Feature[_map.mapSize.x, _map.mapSize.y];
 
         for (int x = -_map.mapChunks.x/2; x < _map.mapChunks.x/2; x++) {
@@ -53,11 +54,14 @@ public class MapGenerator : MonoBehaviour
                 );
                 Vector2Int worldPos = new Vector2Int((Map.CHUNK_SIZE * chunkPos.x) + x, (Map.CHUNK_SIZE * chunkPos.y) + y);
 
-                foreach (Feature feature in biomeZoneMap[tilePos.x, tilePos.y].features)
-                {
-                    bool probabilityMet = ((float)Random.Range(0, 1000000) / 1000000) <= feature.spawnChance;
+                BiomeZone biomeZone = biomeZoneMap[tilePos.x, tilePos.y];
 
-                    // Todo: Check distance from other +.
+                float probability = (float)rnd.Next(1000000) / 1000000;
+                float previousProb = 0;
+                foreach (Feature feature in biomeZone.features)
+                {
+                    previousProb += feature.spawnChance;
+                    bool probabilityMet = probability <= previousProb;
 
                     // Probability not met - continue.
                     if (!probabilityMet) continue;
@@ -76,6 +80,12 @@ public class MapGenerator : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void SpawnManagedFeatures(Vector2Int chunkPos, BiomeZone[,] biomeZoneMap)
+    {
+        // Todo: Managed features are features that must spawn a specific number of times.
+        // Todo: Managed features are good at ensuring the map is fair for all.
     }
 
     private bool IsFeatureSpawnable(Vector2Int tilePos, float radius)

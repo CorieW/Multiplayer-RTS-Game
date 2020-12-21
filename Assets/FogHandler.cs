@@ -17,7 +17,7 @@ public class FogHandler : MonoBehaviour
     public int[,] fogMap { get { return _fogMap; } }
     public Vector2Int fogSize { get { return _map.mapSize + fogExtra; } }
 
-    void Start()
+    void Awake()
     {
         if(!_visibilityHandler) _visibilityHandler = GetComponent<VisibilityHandler>();
 

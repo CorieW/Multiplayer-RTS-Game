@@ -20,13 +20,20 @@ public class BiomeZoneGenerator : NetworkBehaviour
     [Range(1, 8)]
     [SerializeField] private int _octaves;
 
-    private void Start()
+    private void Awake()
     {
         if (!_map) _map = GetComponent<Map>();
     }
 
+    private void GenerateRandomSeed()
+    {
+        _seed = Random.Range(0, int.MaxValue);
+    }
+
     public BiomeZone[,] GenerateBiomeZoneMap()
     {
+        GenerateRandomSeed();
+
         BiomeZone[,] biomeMap = new BiomeZone[_map.mapSize.x, _map.mapSize.y];
         float[,] nutrientMap = PerlinNoise.GeneratePerlinNoise(_map.mapSize.x, _map.mapSize.y, _seed, _scale, _octaves, Vector2.zero);
         gameObject.SetActive(true);
@@ -47,19 +54,4 @@ public class BiomeZoneGenerator : NetworkBehaviour
 
         return biomeMap;
     }
-
-    #region Server
-
-    public override void OnStartServer()
-    {
-        GenerateRandomSeed();
-    }
-
-    [Server]
-    private void GenerateRandomSeed()
-    {
-        _seed = Random.Range(0, int.MaxValue);
-    }
-
-    #endregion
 }

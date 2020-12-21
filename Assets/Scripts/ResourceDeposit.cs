@@ -3,12 +3,16 @@ using UnityEngine;
 
 public class ResourceDeposit : RTSObject {
 
+    [Header("References")]
+    [SerializeField] private ResourceDrop _drop;
+
+    [Header("Attributes")]
     [SyncVar] [SerializeField] private float _maxHealth;
     [SyncVar] [SerializeField] private float _currentHealth;
 
     [Space]
 
-    [SerializeField] private ResourceDrop _resourceDrop;
+    [SerializeField] private ResourceStack _resourceStack;
 
     public float GetMaxHealth()
     {
@@ -33,11 +37,8 @@ public class ResourceDeposit : RTSObject {
     [Server]
     private void DestroyDeposit()
     {
-        // Create Drop
-        GameObject drop = Instantiate(_resourceDrop, transform.position, Quaternion.identity).gameObject; //? I don't know whether this will just create a gameobject with Resource on it, without a sr.
-        NetworkServer.Spawn(drop);
-        // Destroy Deposit
-        NetworkServer.Destroy(gameObject); //? I don't know whether this will destroy on server as well.
+        _drop.CmdCreateDrop(_resourceStack, transform.position);
+        NetworkServer.Destroy(gameObject);
     }
 
     #endregion

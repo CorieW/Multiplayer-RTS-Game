@@ -14,15 +14,18 @@ public class FogTextureHandler : MonoBehaviour
     [Tooltip("Time it takes for the fog to fade out.")]
     [SerializeField] private float _fadeTime = 0.5f;
 
-    void Start()
+    private void Awake()
     {
         if (!_sr) _sr = GetComponent<SpriteRenderer>();
         if (!_fogHandler) _fogHandler = GetComponent<FogHandler>();
+    }
 
+    private void Start()
+    {
         SetupFog();
     }
 
-    void Update()
+    private void Update()
     {
         UpdateFog();
     }

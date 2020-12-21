@@ -45,9 +45,9 @@ public class Unit : PlayerObject
 
     public bool isHauling { get { return _hauling == null; } }
 
-    protected override void Start() 
+    protected override void Awake() 
     {
-        base.Start();
+        base.Awake();
 
         if (!_aiPath) _aiPath = GetComponent<AIPath>();
         if (!_taskList) _taskList = GetComponent<TaskList>();
@@ -99,12 +99,11 @@ public class Unit : PlayerObject
         _aiPath.SearchPath();
     }
 
-    /*[Command] // Todo: Implement
-    private void CmdPerformHaul(ResourceDrop resDrop)
+    [Command] // Todo: Test
+    private void CmdPerformHaul(ResourceStack resourceStack)
     {
-        _hauling = resDrop;
-        resDrop.Haul(true);
-    }*/
+        _hauling = resourceStack;
+    }
 
     #endregion
 
@@ -188,16 +187,14 @@ public class Unit : PlayerObject
     [Client]
     private void PerformHaul(HaulTask haulTask)
     {
+        // ! What if I am already hauling?
+
         ResourceDrop resDrop = haulTask.GetTaskResource();
-        if (resDrop.isBeingHauled) 
-        {
+
+        if (!resDrop) 
+        { // Resource drop is no longer avaliable, indicating it's been picked up since.
             _taskList.FinishTask();
             return;
-        }
-
-        if (isHauling) 
-        { // Already hauling, drop current resource drop and carry on new haul task.
-
         }
 
         if (Vector2.Distance(transform.position, resDrop.transform.position) > RESOURCE_HAULING_DISTANCE)
@@ -208,7 +205,9 @@ public class Unit : PlayerObject
             return;
         }
 
-        // Todo: Once implemented... CmdPerformHaul(haulTask.GetTaskResource());
+        // Todo: Test 
+        CmdPerformHaul(resDrop.resourceStack);
+        resDrop.CmdHaulResource();
     }
 
     #endregion

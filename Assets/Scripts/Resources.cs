@@ -50,15 +50,11 @@ public class Resources : NetworkBehaviour
 
     public override void OnStartServer()
     {
-        ResourceDrop.ServerOnAddResourceToCollection += ServerHandleAddResourcesToCollection;
-        ResourceDrop.ServerOnTakeResourceFromCollection += ServerHandleTakeResourcesFromCollection;
         Building.ServerOnPurchase += ServerHandlePurchase;
     }
 
     public override void OnStopServer()
     {
-        ResourceDrop.ServerOnAddResourceToCollection -= ServerHandleAddResourcesToCollection;
-        ResourceDrop.ServerOnTakeResourceFromCollection -= ServerHandleTakeResourcesFromCollection;
         Building.ServerOnPurchase -= ServerHandlePurchase;
     }
 
@@ -91,8 +87,6 @@ public class Resources : NetworkBehaviour
     {
         if (!isClientOnly) return;
 
-        ResourceDrop.AuthorityOnAddResourceToCollection += AuthorityHandleAddResourcesToCollection;
-        ResourceDrop.AuthorityOnTakeResourceFromCollection += AuthorityHandleTakeResourcesFromCollection;
         Building.AuthorityOnPurchase += AuthorityHandlePurchase;
     }
     
@@ -100,8 +94,6 @@ public class Resources : NetworkBehaviour
     {
         if (!isClientOnly) return;
 
-        ResourceDrop.AuthorityOnAddResourceToCollection -= AuthorityHandleAddResourcesToCollection;
-        ResourceDrop.AuthorityOnTakeResourceFromCollection -= AuthorityHandleTakeResourcesFromCollection;
         Building.AuthorityOnPurchase -= AuthorityHandlePurchase;
     }
 

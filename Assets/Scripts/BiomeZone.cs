@@ -13,6 +13,7 @@ public class BiomeZone : Zone
     [Tooltip("Inclusive")]
     [SerializeField] private float _nutrientMin;
 
+    public string name { get { return _name; } }
     public Color groundColor { get { return _groundColor; } }
     public Feature[] features { get { return _features; } }
     public float nutrientMax { get { return _nutrientMax / 100; } }

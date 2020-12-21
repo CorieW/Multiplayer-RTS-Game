@@ -19,7 +19,7 @@ public class ObjectSelectionHandler : MonoBehaviour
     private RTSPlayer _player;
     private Camera _mainCamera;
 
-    private void Start()
+    private void Awake()
     {
         _mainCamera = Camera.main;
     }

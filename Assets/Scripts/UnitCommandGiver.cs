@@ -10,7 +10,7 @@ public class UnitCommandGiver : MonoBehaviour
 
     private Camera _mainCamera;
 
-    private void Start()
+    private void Awake()
     {
         _mainCamera = Camera.main;
     }
@@ -22,9 +22,11 @@ public class UnitCommandGiver : MonoBehaviour
         Vector3 mousePos = _mainCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         if (Physics.Raycast(mousePos, Vector3.forward, out RaycastHit hit, Mathf.Infinity, _layerMask))
         {
-            if (!hit.collider.TryGetComponent<ResourceDeposit>(out ResourceDeposit resDeposit)) return;
-            
-            GiveResourceHarvestOrder(resDeposit, Keyboard.current.leftShiftKey.isPressed ? OrderType.Assign : OrderType.Set);
+            ResourceDeposit resourceDeposit = hit.collider.GetComponent<ResourceDeposit>();
+            ResourceDrop resourceDrop = hit.collider.GetComponent<ResourceDrop>();
+
+            if (resourceDeposit) GiveResourceHarvestOrder(resourceDeposit, Keyboard.current.leftShiftKey.isPressed ? OrderType.Assign : OrderType.Set);
+            else if (resourceDrop) GiveHaulOrder(resourceDrop, Keyboard.current.leftShiftKey.isPressed ? OrderType.Assign : OrderType.Set);
         }
         else
         {
