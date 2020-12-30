@@ -1,104 +1,84 @@
 using UnityEngine;
 
 public class Task {
-    public TaskType _type; //? When changing this to private I get an error.
-
-    public TaskType GetTaskType() {
-        return _type;
-    }
+    public TaskType _taskType; //? When changing this to private I get an error.
+    
+    public TaskType taskType { get { return _taskType; } }
 }
 public class MoveTask : Task {
     Vector3 _pos;
     float _range;
 
+    public Vector3 pos { get { return _pos; } }
+    public float range { get { return _range; } }
+
     public MoveTask(Vector3 pos, float range = 0) {
         _pos = pos;
         _range = range;
-        _type = TaskType.Move;
-    }
-
-    public Vector3 GetTaskPosition() {
-        return _pos;
-    }
-
-    public float GetTaskRange() 
-    {
-        return _range;
+        _taskType = TaskType.Move;
     }
 }
 public class BuildTask : Task {
     Building _building;
 
+    public Building building { get { return _building; } }
+
     public BuildTask(Building building) {
         _building = building;
-        _type = TaskType.Build;
-    }
-
-    public Building GetTaskBuilding() {
-        return _building;
-    }
-}
-public class StoreTask : Task {
-    Stockpile _stockpile;
-
-    public StoreTask(Stockpile stockpile) {
-        _stockpile = stockpile;
-        _type = TaskType.Store;
-    }
-
-    public Stockpile GetTaskStockpile() {
-        return _stockpile;
+        _taskType = TaskType.Build;
     }
 }
 public class RepairTask : Task {
     Building _building;
 
+    public Building building { get { return _building; } }
+
     public RepairTask(Building building) {
         _building = building;
-        _type = TaskType.Repair;
-    }
-
-    public Building GetTaskBuilding() {
-        return _building;
+        _taskType = TaskType.Repair;
     }
 }
 public class ResourceHarvestTask : Task {
-    ResourceDeposit _resourceDepo;
+    ResourceDeposit _resourceDeposit;
 
-    public ResourceHarvestTask(ResourceDeposit resourceDepo) {
-        _resourceDepo = resourceDepo;
-        _type = TaskType.ResourceHarvest;
-    }
+    public ResourceDeposit resourceDeposit { get { return _resourceDeposit; } }
 
-    public ResourceDeposit GetTaskResourceDeposit() {
-        return _resourceDepo;
+    public ResourceHarvestTask(ResourceDeposit resourceDeposit) {
+        _resourceDeposit = resourceDeposit;
+        _taskType = TaskType.ResourceHarvest;
     }
 }
 public class HaulTask : Task {
     ResourceDrop _resourceDrop;
 
+    public ResourceDrop resourceDrop { get { return _resourceDrop; } }
+
     public HaulTask(ResourceDrop resourceDrop) {
         _resourceDrop = resourceDrop;
-        _type = TaskType.Haul;
+        _taskType = TaskType.Haul;
     }
+}
+public class StoreTask : Task {
+    Stockpile _stockpile;
 
-    public ResourceDrop GetTaskResource() {
-        return _resourceDrop;
+    public Stockpile stockpile { get { return _stockpile; } }
+
+    public StoreTask(Stockpile stockpile) {
+        _stockpile = stockpile;
+        _taskType = TaskType.Store;
     }
 }
 public class AttackTask : Task {
-    PlayerObject _playerObj;
+    PlayerEntity _playerEntity;
 
-    public AttackTask(PlayerObject playerObj) {
-        _playerObj = playerObj;
-        _type = TaskType.Attack;
-    }
+    public PlayerEntity playerEntity { get { return _playerEntity; } }
 
-    public PlayerObject GetTaskPlayerObject() {
-        return _playerObj;
+    public AttackTask(PlayerEntity playerEntity) {
+        _playerEntity = playerEntity;
+        _taskType = TaskType.Attack;
     }
 }
 
 public enum TaskType {
-    None, Move, Build, Repair, ResourceHarvest, Haul, Attack, Store
+    None, Move, Build, Repair, ResourceHarvest, Haul, Store, Attack
 }

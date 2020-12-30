@@ -3,20 +3,28 @@ using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 
+[RequireComponent(typeof(PlayerResourcesHandler))]
 public class RTSPlayer : NetworkBehaviour
 {
+    [Header("References")]
+    [SerializeField] private PlayerResourcesHandler _playerResourcesHandler;
 
-    [SerializeField] private Resources _resources;
-    [SerializeField] private List<PlayerObject> _objects = new List<PlayerObject>();
+    [Header("Attributes")]
+    [SerializeField] private List<PlayerEntity> _entities = new List<PlayerEntity>();
 
-    public Resources GetResources()
+    private void Awake()
     {
-        return _resources;
+        if (_playerResourcesHandler == null) _playerResourcesHandler = GetComponent<PlayerResourcesHandler>();
     }
 
-    public List<PlayerObject> GetPlayerObjects()
+    public List<PlayerEntity> GetPlayerEntities()
     {
-        return _objects;
+        return _entities;
+    }
+
+    public Dictionary<ResourceType, int> GetTotalResources()
+    { // Todo: Complete
+        return null;
     }
 
     #region Server
@@ -24,29 +32,29 @@ public class RTSPlayer : NetworkBehaviour
     public override void OnStartServer()
     {
         // Subscribing to events
-        Unit.ServerOnPlayerObjectSpawned += ServerHandlePlayerObjectSpawned;
-        Unit.ServerOnPlayerObjectDespawned += ServerHandlePlayerObjectDespawned;
+        PlayerEntity.ServerOnPlayerEntitySpawned += ServerHandlePlayerEntitySpawned;
+        PlayerEntity.ServerOnPlayerEntityDespawned += ServerHandlePlayerEntityDespawned;
     }
 
     public override void OnStopServer()
     {
         // Unsubscribing to events
-        Unit.ServerOnPlayerObjectSpawned -= ServerHandlePlayerObjectSpawned;
-        Unit.ServerOnPlayerObjectDespawned -= ServerHandlePlayerObjectDespawned;
+        PlayerEntity.ServerOnPlayerEntitySpawned -= ServerHandlePlayerEntitySpawned;
+        PlayerEntity.ServerOnPlayerEntityDespawned -= ServerHandlePlayerEntityDespawned;
     }
 
-    private void ServerHandlePlayerObjectSpawned(PlayerObject playerObj)
+    private void ServerHandlePlayerEntitySpawned(PlayerEntity playerObj)
     {
         if (playerObj.connectionToClient.connectionId != connectionToClient.connectionId) return;
 
-        _objects.Add(playerObj);
+        _entities.Add(playerObj);
     }
 
-    private void ServerHandlePlayerObjectDespawned(PlayerObject playerObj)
+    private void ServerHandlePlayerEntityDespawned(PlayerEntity playerObj)
     {
         if (playerObj.connectionToClient.connectionId != connectionToClient.connectionId) return;
 
-        _objects.Remove(playerObj);
+        _entities.Remove(playerObj);
     }
 
     #endregion
@@ -66,32 +74,32 @@ public class RTSPlayer : NetworkBehaviour
         // Without the below check, there would be a duplicate list
         if (!isClientOnly) return;
 
-        Unit.AuthorityOnPlayerObjectSpawned += AuthorityHandlePlayerObjectSpawned;
-        Unit.AuthorityOnPlayerObjectDespawned += AuthorityHandlePlayerObjectDespawned;
+        PlayerEntity.AuthorityOnPlayerEntitySpawned += AuthorityHandlePlayerEntitySpawned;
+        PlayerEntity.AuthorityOnPlayerEntityDespawned += AuthorityHandlePlayerEntityDespawned;
     }
     
     public override void OnStopClient()
     {
         if (!isClientOnly) return;
 
-        Unit.AuthorityOnPlayerObjectSpawned -= AuthorityHandlePlayerObjectSpawned;
-        Unit.AuthorityOnPlayerObjectDespawned -= AuthorityHandlePlayerObjectDespawned;
+        PlayerEntity.AuthorityOnPlayerEntitySpawned -= AuthorityHandlePlayerEntitySpawned;
+        PlayerEntity.AuthorityOnPlayerEntityDespawned -= AuthorityHandlePlayerEntityDespawned;
     }
 
-    private void AuthorityHandlePlayerObjectSpawned(PlayerObject playerObj)
+    private void AuthorityHandlePlayerEntitySpawned(PlayerEntity playerObj)
     {
         // I don't know why the below line is required
         if (!hasAuthority) return;
 
-        _objects.Add(playerObj);
+        _entities.Add(playerObj);
     }
 
-    private void AuthorityHandlePlayerObjectDespawned(PlayerObject playerObj)
+    private void AuthorityHandlePlayerEntityDespawned(PlayerEntity playerObj)
     {
         // I don't know why the below line is required
         if (!hasAuthority) return;
 
-        _objects.Remove(playerObj);
+        _entities.Remove(playerObj);
     }
 
     #endregion

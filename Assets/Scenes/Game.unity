@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd0187f9e63161345a0307a7722286e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _objectSelectionHandler: {fileID: 96793907}
+  _entitytSelectionHandler: {fileID: 96793907}
   _layerMask:
     serializedVersion: 2
     m_Bits: 1
@@ -166,7 +166,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 96793905}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 29c313a6170a7d14cae2821a8c92d10d, type: 3}
+  m_Script: {fileID: 11500000, guid: 4d2e314a3eb1db4488ae6a90bbe94cf8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _selectionArea: {fileID: 1256625814}
@@ -227,11 +227,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 129104279}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eafb16d0591c4e74d918e2e55b1ca249, type: 3}
+  m_Script: {fileID: 11500000, guid: 64437ca051a26934fa151ca40e9a6ca0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _selectedObjectUI: {fileID: 8377542307884352213, guid: 0473fea6b7988854e9333461463d2aae, type: 3}
-  _selectedObjectUIs: []
+  _selectedEntityUI: {fileID: 8813652842964080444, guid: 0473fea6b7988854e9333461463d2aae, type: 3}
+  _selectedEntityUIs: []
 --- !u!1 &137029491
 GameObject:
   m_ObjectHideFlags: 0
